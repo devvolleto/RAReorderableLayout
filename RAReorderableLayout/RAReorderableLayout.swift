@@ -84,6 +84,8 @@ public class RAReorderableLayout: UICollectionViewFlowLayout, UIGestureRecognize
     
     public var scrollSpeedValue: CGFloat = 10.0
     
+    public var fakeCellShadowOffset = CGSizeMake(0, 0)
+    
     private var offsetFromTop: CGFloat {
         let contentOffset = collectionView!.contentOffset
         return scrollDirection == .Vertical ? contentOffset.y : contentOffset.x
@@ -385,7 +387,7 @@ public class RAReorderableLayout: UICollectionViewFlowLayout, UIGestureRecognize
             
             let currentCell = collectionView?.cellForItemAtIndexPath(indexPath!)
             
-            cellFakeView = RACellFakeView(cell: currentCell!)
+            cellFakeView = RACellFakeView(cell: currentCell!, shadowOffset: self.fakeCellShadowOffset)
             cellFakeView!.indexPath = indexPath
             cellFakeView!.originalCenter = currentCell?.center
             cellFakeView!.cellFrame = layoutAttributesForItemAtIndexPath(indexPath!)!.frame
@@ -476,13 +478,13 @@ private class RACellFakeView: UIView {
         super.init(coder: aDecoder)
     }
     
-    init(cell: UICollectionViewCell) {
+    init(cell: UICollectionViewCell, shadowOffset: CGSize = CGSizeZero) {
         super.init(frame: cell.frame)
         
         self.cell = cell
         
         layer.shadowColor = UIColor.blackColor().CGColor
-        layer.shadowOffset = CGSizeMake(0, 0)
+        layer.shadowOffset = shadowOffset
         layer.shadowOpacity = 0
         layer.shadowRadius = 5.0
         layer.shouldRasterize = false
